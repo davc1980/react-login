@@ -1,14 +1,15 @@
-import React from 'react';
-import Protected from './Protected';
-import Public from './Public';
-import netlifyIdentity from 'netlify-identity-widget';
+import React from "react";
+import Protected from "./Protected";
+import Public from "./Public";
+
+import netlifyIdentity from "netlify-identity-widget";
 import {
   BrowserRouter as Router,
   Route,
   Link,
   Redirect,
-  withRouter
-} from 'react-router-dom';
+  withRouter,
+} from "react-router-dom";
 
 // copied straight from https://reacttraining.com/react-router/web/example/auth-workflow
 ////////////////////////////////////////////////////////////
@@ -22,16 +23,15 @@ function AuthExample() {
     <Router>
       <div>
         <AuthButton />
-        <ul>
-          <li>
-            <Link to="/public">Public Page</Link>
-          </li>
-          <li>
-            <Link to="/protected">Protected Page</Link>
-          </li>
-        </ul>
+        <div class="topnav">
+          <Link to="/public">Public Page</Link>
+
+          <Link to="/protected">Protected Page</Link>
+        </div>
+
         <Route path="/public" component={Public} />
         <Route path="/login" component={Login} />
+
         <PrivateRoute path="/protected" component={Protected} />
       </div>
     </Router>
@@ -44,7 +44,7 @@ const netlifyAuth = {
   authenticate(callback) {
     this.isAuthenticated = true;
     netlifyIdentity.open();
-    netlifyIdentity.on('login', user => {
+    netlifyIdentity.on("login", (user) => {
       this.user = user;
       callback(user);
     });
@@ -52,43 +52,42 @@ const netlifyAuth = {
   signout(callback) {
     this.isAuthenticated = false;
     netlifyIdentity.logout();
-    netlifyIdentity.on('logout', () => {
+    netlifyIdentity.on("logout", () => {
       this.user = null;
       callback();
     });
-  }
+  },
 };
 
-const AuthButton = withRouter(
-  ({ history }) =>
-    netlifyAuth.isAuthenticated ? (
-      <p>
-        Welcome!{' '}
-        <button
-          onClick={() => {
-            netlifyAuth.signout(() => history.push('/'));
-          }}
-        >
-          Sign out
-        </button>
-      </p>
-    ) : (
-      <p>You are not logged in.</p>
-    )
+const AuthButton = withRouter(({ history }) =>
+  netlifyAuth.isAuthenticated ? (
+    <p>
+      Welcome!{" "}
+      <button
+        onClick={() => {
+          netlifyAuth.signout(() => history.push("/"));
+        }}
+      >
+        Sign out
+      </button>
+    </p>
+  ) : (
+    <p>You are not logged in.</p>
+  )
 );
 
 function PrivateRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={props =>
+      render={(props) =>
         netlifyAuth.isAuthenticated ? (
           <Component {...props} />
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
-              state: { from: props.location }
+              pathname: "/login",
+              state: { from: props.location },
             }}
           />
         )
@@ -107,7 +106,7 @@ class Login extends React.Component {
   };
 
   render() {
-    let { from } = this.props.location.state || { from: { pathname: '/' } };
+    let { from } = this.props.location.state || { from: { pathname: "/" } };
     let { redirectToReferrer } = this.state;
 
     if (redirectToReferrer) return <Redirect to={from} />;
