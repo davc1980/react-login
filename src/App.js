@@ -27,12 +27,11 @@ function AuthExample() {
           <Link to="/public">Public Page</Link>
 
           <Link to="/protected">Protected Page</Link>
+          <PrivateRoute path="/protected" component={Protected} />
         </div>
 
         <Route path="/public" component={Public} />
         <Route path="/login" component={Login} />
-
-        <PrivateRoute path="/protected" component={Protected} />
       </div>
     </Router>
   );
